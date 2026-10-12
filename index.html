@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OUR GROUP, OUR PAGALPANTI 🤪</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#25204b,#0b0b16 65%);color:#f7f4ff;font-family:Arial,sans-serif}
+.wrap{max-width:1000px;margin:auto;padding:20px}
+.card{background:#17162b;border:1px solid #383453;border-radius:22px;padding:24px;margin-bottom:16px}
+.center{text-align:center}.hidden{display:none!important}
+h1{font-size:clamp(28px,6vw,48px);color:#ff70d2}
+h2{font-size:clamp(21px,4vw,30px)}
+p{color:#c4bfdc;line-height:1.6}
+button{border:0;border-radius:12px;padding:12px 17px;margin:5px;background:linear-gradient(100deg,#ff70d2,#b7a0ff);font-weight:bold;cursor:pointer}
+button:disabled{opacity:.4}.secondary{background:#292744;color:white;border:1px solid #474367}
+input[type=text]{width:min(100%,420px);padding:14px;background:#0d0d1b;border:1px solid #494467;border-radius:12px;color:white}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.tiny{font-size:13px;color:#b9b4d2}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px}
+.person{display:flex;align-items:center;gap:9px;background:#201e38;padding:12px;border:1px solid #383453;border-radius:12px}
+.person.selected{border-color:#ff70d2;background:#33203f}
+.person input{accent-color:#ff70d2}
+.progress{height:7px;background:#34304e;border-radius:9px;overflow:hidden;margin:15px 0}
+.fill{height:100%;background:linear-gradient(90deg,#ff70d2,#7c8cff)}
+.bar{height:7px;background:#34304e;border-radius:9px;overflow:hidden;margin-top:5px}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#ff70d2,#7c8cff)}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:16px}
+.voteRow{margin:12px 0}
+.voteLabel{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.resultCard{background:#201e38;border:1px solid #383453;border-radius:15px;padding:14px}
+.rank{padding:8px 0;border-bottom:1px solid #383453;display:flex;gap:8px;justify-content:space-between}
+.confetti{font-size:35px;animation:bounce .7s infinite alternate}
+@keyframes bounce{to{transform:translateY(-8px) rotate(4deg)}}
+@media(max-width:650px){.columns{grid-template-columns:1fr}.card{padding:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<strong>🤪 OUR GROUP, OUR PAGALPANTI</strong>
+<div>
+<button id="musicBtn" class="secondary">♫ Music: ON</button>
+<label class="tiny" for="volume">Volume</label>
+<input id="volume" type="range" min="0" max="1" step=".05" value=".45">
+</div>
+</header>
+
+<audio id="music" src="./music.mp3" loop preload="auto"></audio>
+
+<section id="welcome" class="card center">
+<p>⚡ FRIEND GROUP CHAOS ⚡</p>
+<h1>OUR GROUP,<br>OUR PAGALPANTI 🤪</h1>
+<p>A new pagal has entered the chat! 👀</p>
+<h2>Who are you, legend? 😂</h2>
+<p>Enter your name so we know who's causing trouble!</p>
+<input id="playerName" type="text" list="names" placeholder="Type or choose your name">
+<datalist id="names"></datalist>
+<br><br>
+<button id="start">LET THE PAGALPANTI BEGIN! ✨</button>
+<br><br>
+<button id="savedResults" class="secondary hidden">📊 View saved results</button>
+<p class="tiny">Votes are saved in this browser on this device.</p>
+</section>
+
+<section id="reveal" class="card center hidden">
+<p>YOUR OFFICIAL PAGAL IDENTITY</p>
+<div id="bigEmoji" style="font-size:100px">😎</div>
+<h1 id="revealName"></h1>
+<p>This emoji is yours for the whole game! 💖</p>
+</section>
+
+<section id="game" class="hidden">
+<div class="card">
+<div class="top"><span id="turn"></span><span id="voter"></span></div>
+<div class="progress"><div id="progress" class="fill"></div></div>
+<p id="counter"></p>
+<h2 id="question"></h2>
+<p>Choose up to 2 friends. Be playful and kind! 💗</p>
+<div id="options" class="people"></div>
+<div class="top" style="margin-top:18px">
+<button id="back" class="secondary">← Back</button>
+<span id="selectedCount" class="tiny">0 of 2 selected</span>
+<button id="submit">Submit vote →</button>
+</div>
+</div>
+<div class="columns">
+<div class="card"><h3>📊 Live votes</h3><p class="tiny">Everyone stays visible, even with zero votes.</p><div id="liveVotes"></div></div>
+<div class="card"><h3>👀 Who voted for whom?</h3><div id="voterDetails"></div></div>
+</div>
+</section>
+
+<section id="nextPlayer" class="card center hidden">
+<h1>TURN COMPLETE! 🎉</h1>
+<h2>Pass the phone to the next friend! 📱</h2>
+<p id="nextMessage"></p>
+<button id="next">NEXT PAGAL'S TURN →</button>
+</section>
+
+<section id="results" class="card hidden">
+<div class="center">
+<p>THE GROUP HAS SPOKEN 🥁</p>
+<h1>PAGALPANTI RESULTS 🏆</h1>
+<p>All question results are displayed below!</p>
+<div id="summary"></div>
+</div>
+<div id="allResults" class="results"></div>
+<div class="center" style="margin-top:22px">
+<button id="finish">FINISH PAGALPANTI! 🎉</button>
+</div>
+</section>
+
+<section id="goodbye" class="card center hidden">
+<div class="confetti">🎉 ✨ 🎊 💖 🎉</div>
+<h1>PAGALPANTI COMPLETE! 🤪</h1>
+<p>Thanks for being part of the madness! 💖</p>
+<h2>Good friends. Crazy memories. Unlimited pagalpanti. 😂✨</h2>
+<h2>Same group, more drama next time! 😎🎉</h2>
+<p>Made with 💗 and a little bit of madness.</p>
+<button id="playAgain" class="secondary">↻ Play again</button>
+</section>
+</div>
+
+<script>
+const PLAYERS=['Dhananjay','Parth','Mrutyunjay','Bhumika','Bhagya','Sangamesh','Khizar','Anudeep','Amulya','Nisarga','Amit','Devika'];
+const EMOJIS={Dhananjay:'😎',Parth:'😜',Mrutyunjay:'🥳',Bhumika:'🦋',Bhagya:'🌸',Sangamesh:'🎮',Khizar:'🤩',Anudeep:'😆',Amulya:'🥰',Nisarga:'💖',Amit:'🤠',Devika:'😇'};
+const QUESTIONS=[
+'Who is always late..!!','Who is more reliable..!!','Who is the dumbest?',
+'Who is the most funny?','Who makes the worst decision?','Who is the most silent person?',
+'Group ka Editor','Group ka don','Group ka artist',
+'Who laughs at a serious situation?','Who spends the most time on their phone?',
+'Who is the most lazy?','Who is the most foodie?','Who is the most talkative?',
+'Who sends more emojis?'
+];
+const KEY='ourGroupPagalpantiVotes_v2';
+const $=id=>document.getElementById(id);
+const emoji=n=>EMOJIS[n]||'✨';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let votes=loadVotes(),player='',q=0,selected=new Set();
+
+function loadVotes(){try{const v=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(v)&&v.length===QUESTIONS.length)return v;}catch(e){}return QUESTIONS.map(()=>({}));}
+function saveVotes(){try{localStorage.setItem(KEY,JSON.stringify(votes));}catch(e){}}
+function show(id){['welcome','reveal','game','nextPlayer','results','goodbye'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
+function hasVoted(n){return QUESTIONS.every((_,i)=>Object.prototype.hasOwnProperty.call(votes[i],n));}
+function allFinished(){return PLAYERS.every(hasVoted);}
+function refreshShortcut(){$('savedResults').classList.toggle('hidden',!votes.some(v=>Object.keys(v).length>0));}
+$('names').innerHTML=PLAYERS.map(n=>`<option value="${n}">`).join('');
+refreshShortcut();
+
+const music=$('music');
+music.volume=Number($('volume').value);
+let musicOn=true;
+
+function updateMusicButton(){$('musicBtn').textContent=musicOn?'♫ Music: ON':'♫ Music: OFF';}
+async function tryPlayMusic(){
+try{await music.play();musicOn=true;}
+catch(e){musicOn=false;}
+updateMusicButton();
+}
+$('volume').addEventListener('input',()=>music.volume=Number($('volume').value));
+$('musicBtn').addEventListener('click',async()=>{
+if(musicOn){music.pause();musicOn=false;updateMusicButton();}
+else{await tryPlayMusic();}
+});
+music.addEventListener('error',()=>{musicOn=false;updateMusicButton();});
+music.addEventListener('playing',()=>{musicOn=true;updateMusicButton();});
+music.addEventListener('pause',()=>{if(music.currentTime>0){musicOn=false;updateMusicButton();}});
+
+/* Try autoplay as soon as the game opens. Browsers may block it. */
+tryPlayMusic();
+/* If autoplay is blocked, retry after the first user interaction. */
+document.addEventListener('pointerdown',()=>{
+if(!musicOn && !music.error)tryPlayMusic();
+},{once:true});
+
+$('start').addEventListener('click',async()=>{
+player=$('playerName').value.trim();
+if(!PLAYERS.includes(player)){alert('Please choose a name from the group list.');return;}
+if(hasVoted(player)){
+alert(player+' has already completed all questions.');
+if(allFinished())showResults();else show('nextPlayer');
+return;
+}
+q=0;
+$('bigEmoji').textContent=emoji(player);
+$('revealName').textContent=player+' '+emoji(player);
+if(music.paused)tryPlayMusic();
+show('reveal');
+setTimeout(()=>{show('game');renderQuestion();},1800);
+});
+
+function tally(index){
+const counts=Object.fromEntries(PLAYERS.map(n=>[n,0]));
+Object.values(votes[index]).forEach(picks=>picks.forEach(n=>counts[n]++));
+return counts;
+}
+function renderQuestion(){
+$('turn').textContent='Player '+(PLAYERS.indexOf(player)+1)+' of '+PLAYERS.length;
+$('voter').textContent=emoji(player)+' '+player+"'s turn";
+$('counter').textContent='QUESTION '+(q+1)+' OF '+QUESTIONS.length;
+$('question').textContent=QUESTIONS[q];
+$('progress').style.width=((q+1)/QUESTIONS.length*100)+'%';
+const done=Object.prototype.hasOwnProperty.call(votes[q],player);
+selected=new Set(votes[q][player]||[]);
+$('options').innerHTML=PLAYERS.filter(n=>n!==player).map(n=>`<label class="person ${selected.has(n)?'selected':''}"><input type="checkbox" value="${esc(n)}" ${selected.has(n)?'checked':''} ${done?'disabled':''}><span>${emoji(n)} ${esc(n)}</span></label>`).join('');
+$('options').querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{
+if(input.checked&&selected.size>=2){input.checked=false;alert('Choose up to 2 friends only!');return;}
+if(input.checked)selected.add(input.value);else selected.delete(input.value);
+$('selectedCount').textContent=selected.size+' of 2 selected';
+input.closest('.person').classList.toggle('selected',input.checked);
+}));
+$('selectedCount').textContent=done?'Vote already saved':selected.size+' of 2 selected';
+$('submit').textContent=done?(q===QUESTIONS.length-1?'Finish turn ✓':'Next question →'):(q===QUESTIONS.length-1?'Submit & finish turn ✓':'Submit vote →');
+$('back').disabled=q===0;
+renderLive();
+}
+function renderLive(){
+const counts=tally(q),max=Math.max(1,...Object.values(counts));
+$('liveVotes').innerHTML=PLAYERS.map(n=>`<div class="voteRow"><div class="voteLabel"><strong>${emoji(n)} ${esc(n)}</strong><span>${counts[n]} vote${counts[n]===1?'':'s'}</span></div><div class="bar"><span style="width:${counts[n]/max*100}%"></span></div></div>`).join('');
+const details=PLAYERS.map(target=>({target,voters:PLAYERS.filter(v=>(votes[q][v]||[]).includes(target))})).filter(x=>x.voters.length);
+$('voterDetails').innerHTML=details.length?details.map(x=>`<div class="voteRow"><strong>${emoji(x.target)} ${esc(x.target)}</strong><p class="tiny">Voted by: ${x.voters.map(n=>emoji(n)+' '+esc(n)).join(', ')}</p></div>`).join(''):'<p>No votes yet.</p>';
+}
+$('back').addEventListener('click',()=>{if(q>0){q--;renderQuestion();}});
+$('submit').addEventListener('click',()=>{
+if(!Object.prototype.hasOwnProperty.call(votes[q],player)){votes[q][player]=[...selected];saveVotes();}
+renderLive();
+if(q<QUESTIONS.length-1){q++;renderQuestion();return;}
+refreshShortcut();
+if(allFinished())showResults();
+else{
+const remaining=PLAYERS.filter(n=>!hasVoted(n));
+$('nextMessage').textContent=player+' finished all questions. '+remaining.length+' friend(s) still need to vote.';
+show('nextPlayer');
+}
+});
+$('next').addEventListener('click',()=>{$('playerName').value='';show('welcome');$('playerName').focus();});
+
+function showResults(){
+$('allResults').innerHTML=QUESTIONS.map((question,i)=>{
+const counts=tally(i);
+const ranked=PLAYERS.map((name,order)=>({name,order,count:counts[name]})).filter(x=>x.count>0).sort((a,b)=>b.count-a.count||a.order-b.order);
+return `<article class="resultCard"><h3>${i+1}. ${esc(question)}</h3>${ranked.length?ranked.map((x,pos)=>`<div class="rank"><span>${pos===0?'🏆':pos===1?'🥈':pos===2?'🥉':(pos+1)+'.'} ${emoji(x.name)} ${esc(x.name)}</span><strong>${x.count} vote${x.count===1?'':'s'}</strong></div>`).join(''):'<p>No votes recorded.</p>'}</article>`;
+}).join('');
+const total=Object.fromEntries(PLAYERS.map(n=>[n,0]));
+QUESTIONS.forEach((_,i)=>{const counts=tally(i);PLAYERS.forEach(n=>total[n]+=counts[n]);});
+const leaders=PLAYERS.map((name,order)=>({name,order,count:total[name]})).filter(x=>x.count>0).sort((a,b)=>b.count-a.count||a.order-b.order).slice(0,3);
+$('summary').innerHTML='<p><strong>🌟 Overall group shout-outs 🌟</strong><br>'+(leaders.length?leaders.map((x,i)=>['🥇','🥈','🥉'][i]+' '+emoji(x.name)+' '+esc(x.name)+' — '+x.count+' votes').join('<br>'):'No votes yet.')+'</p>';
+show('results');
+}
+$('savedResults').addEventListener('click',showResults);
+$('finish').addEventListener('click',()=>{
+music.pause();music.currentTime=0;musicOn=false;updateMusicButton();show('goodbye');
+});
+$('playAgain').addEventListener('click',()=>{
+if(!confirm('Clear saved votes and start a new game on this browser?'))return;
+votes=QUESTIONS.map(()=>({}));saveVotes();player='';q=0;selected.clear();$('playerName').value='';refreshShortcut();show('welcome');
+});
+window.addEventListener('pagehide',()=>music.pause());
+window.addEventListener('storage',e=>{if(e.key===KEY){votes=loadVotes();refreshShortcut();}});
+</script>
+</body>
+</html>
